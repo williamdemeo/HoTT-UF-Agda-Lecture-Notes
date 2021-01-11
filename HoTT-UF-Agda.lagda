@@ -3218,7 +3218,7 @@ equality in `Σ` types as follows.
 
 \begin{code}
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
+       → Σ p ꞉ pr₁ σ ≡ pr₁ τ , (transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 
 to-Σ-≡ (refl x , refl a) = refl (x , a)
@@ -3226,7 +3226,7 @@ to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , (transport A p (pr₂ σ) ≡ pr₂ τ)
 
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 \end{code}
@@ -3624,7 +3624,7 @@ has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id
 Notice that `has-section r` is the type of all sections `(s , η)` of
 `r`, which may well be empty. So a point of this type is a designated
 section `s` of `r`, together with the datum `η`. Unless the domain of
-`r` is a set, this datum is not property, and we may well have an
+`r` is a set, this datum is not a property, and we may well have an
 element `(s , η')` of the type `has-section r` with `η'` distinct from
 `η` for the same `s`.
 
@@ -3635,6 +3635,19 @@ have a function `Y → X` which has a section:
 _◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ◁ Y = Σ r ꞉ (Y → X), has-section r
 \end{code}
+
+Here is some intuition to guide our understanding of the type `X ◁ Y`:
+
+  `X ◁ Y` is inhabited iff `∃ r : Y -> X` and `∃ s : X -> Y` such that `r ∘ s ~ id`
+  (the identity on X); this holds iff `∃ r : Y -> X` with a *right* inverse, say,
+  `s : X -> Y`.  (Recall, a function `r : Y -> X` has a right inverse iff it is
+  surjective, so, in this sense, we can think of `X ◁ Y` as asserting that `X`
+  "embeds" into `Y`.)
+
+  An inhabitant `t : X ◃ Y` of this retraction type is a triple `t = (r , s , η)`
+  where `r : Y -> X` is a (surjective) function with a section: `(s , η) : has-section r`,
+  so `s : X -> Y` and `η : r ∘ s ~ id`, i.e., `η` is a proof that `r` composes with `s`
+  to the indentity on X.]
 
 This type actually collects *all* the ways in which the type `X` can
 be a retract of the type `Y`, and so is data or structure on `X` and
@@ -3959,7 +3972,7 @@ The non-trivial direction derives the equivalence property from
 invertibility data, for which we use the retraction techniques
 explained [above](HoTT-UF-Agda.html#retracts).
 
-Suppose that invertibility data
+Suppose that invertibility data for a map `f : X → Y` are given by
 
    > `g : Y → X` ,
 
@@ -3967,8 +3980,7 @@ Suppose that invertibility data
 
    > `ε : (y : Y) → f (g y) ≡ y`
 
-for a map `f : X → Y` is given, and that a point `y₀` in the codomain
-of `f` is given.
+and that a point `y₀` in the codomain of `f` is given.
 
 We need to show that the fiber `Σ x ꞉ X , f x ≡ y₀` of `y₀` is a
 singleton.
@@ -14760,10 +14772,19 @@ To prove the required universal property, we also need the fact that
      b = Id→fun a
 \end{code}
 
-We are now ready to formulate and prove the required universal
-property of the quotient. What is noteworthy here, regarding
-universes, is that the universal property says that we can eliminate
-into any set `A` of any universe `𝓦`.
+We are now ready to formulate and prove the universal property of the
+quotient. What is noteworthy here, regarding universes, is that the
+universal property says that we can eliminate into any set `A` of any
+universe `𝓦`.
+
+                   η
+              X ------> X/≈
+               \       .
+                \     .
+               f \   . f'
+                  \ .
+                   v
+                   A
 
 \begin{code}
  universal-property : (A : 𝓦 ̇ )

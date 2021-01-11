@@ -899,14 +899,14 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
 apd f (refl x) = refl (f x)
 
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
+       → Σ p ꞉ pr₁ σ ≡ pr₁ τ , (transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 
 to-Σ-≡ (refl x , refl a) = refl (x , a)
 
 from-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
          → σ ≡ τ
-         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , (transport A p (pr₂ σ) ≡ pr₂ τ)
 
 from-Σ-≡ (refl (x , a)) = (refl x , refl a)
 
